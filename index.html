@@ -5,6 +5,7 @@
         <title>Ceci n'est pas un jeu</title>
         <script type="text/javascript">
             var wordList;
+            var score = 0;
             var client = new XMLHttpRequest();
             client.open('GET', 'words_fr.txt');
             client.onreadystatechange = function() {
@@ -21,17 +22,22 @@
             
             function check(){
                 var word = document.getElementById("word").value.normalize('NFD').replace(/[\u0300-\u036f]/g, "");
-                if(wordList.indexOf(word) != -1) alert("bravo !");
-                else alert("et non...");
+                if(wordList.indexOf(word) != -1){
+                    alert("bravo !");
+                    document.getElementById("score").innerHTML = ++score;
+                }
+                else alert("et non...");    
                 document.getElementById("word").value = '';
             }
         </script>
     </head>
     <body>
         <div id="letters"></div>
+        <div><span id="score">0</span> mots trouvés</div>
         <form onsubmit="check();return false;">
             <input id="word">
             <input type="submit" value="Essayer">
         </form>
+        <button onclick="location.reload()">Nouveau tirage</button>
     </body>
 </html>
