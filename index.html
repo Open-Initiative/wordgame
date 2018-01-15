@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>Ceci n'est pas un jeu</title>
+        <script type="text/javascript">
+            var wordList;
+            var client = new XMLHttpRequest();
+            client.open('GET', 'words_fr.txt');
+            client.onreadystatechange = function() {
+               if(client.readyState === XMLHttpRequest.DONE && client.status === 200) {
+                  var possible = client.responseText.split('\n').filter(w=>w.length==6);
+                  var letters = possible[Math.floor(Math.random() * possible.length)];
+                  
+                  document.getElementById("letters").innerHTML = letters.split('').sort(()=> 0.5-Math.random()).join(''); //display letters in random order
+                  var re = new RegExp("\\n["+letters+"]+\\n", 'g');
+                  wordList = client.responseText.match(re).map(w=>w.replace(/\n/g, '')).filter(w=>w.length>2) //filter dictionnary with selected letters
+                }
+            }
+            client.send();
+            
+            function check(){
+                var word = document.getElementById("word").value.normalize('NFD').replace(/[\u0300-\u036f]/g, "");
+                if(wordList.indexOf(word) != -1) alert("bravo !");
+                else alert("et non...");
+                document.getElementById("word").value = '';
+            }
+        </script>
+    </head>
+    <body>
+        <div id="letters"></div>
+        <form onsubmit="check();return false;">
+            <input id="word">
+            <input type="submit" value="Essayer">
+        </form>
+    </body>
+</html>
